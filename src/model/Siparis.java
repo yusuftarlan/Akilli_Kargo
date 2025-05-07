@@ -7,4 +7,9 @@ public class Siparis {
     public String getSehir() {
         return Sehir;
     }
+
+    @Override
+    public String toString() {
+        return getSehir();
+    }
 }
