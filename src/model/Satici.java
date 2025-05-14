@@ -12,8 +12,9 @@ public class Satici {
     }
 
 
-    public Siparis[]  kargoHazirla(){
+    public Kargo  kargoHazirla(){
 
-        return siparisQueue.kargoHazirla();
+        return new Kargo(siparisQueue.kargoHazirla());
+
     }
 }

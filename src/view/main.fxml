@@ -1,24 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ControlMain">
   <tabs>
     <Tab text="Market">
       <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Text layoutX="254.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MARKET SAYFASI" />
+                  <Button fx:id="butMar" layoutX="264.0" layoutY="219.0" mnemonicParsing="false" onAction="#sayMar" text="Sipariş Ver" />
+                  <TextField editable="false" layoutX="63.0" layoutY="118.0" prefHeight="26.0" prefWidth="18.0" />
+                  <Button layoutX="101.0" layoutY="119.0" mnemonicParsing="false" text="+" />
+                  <Button layoutX="32.0" layoutY="119.0" mnemonicParsing="false" text="-" />
+                  <ImageView fitHeight="84.0" fitWidth="124.0" layoutX="19.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                  <VBox layoutX="454.0" layoutY="46.0" prefHeight="35.0" prefWidth="119.0">
+                     <children>
+                        <RadioButton mnemonicParsing="false" text="Premium Müşteri">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="isPre" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton mnemonicParsing="false" text="Normal Müşteri" toggleGroup="$isPre" />
+                     </children>
+                  </VBox>
+               </children></AnchorPane>
       </content>
     </Tab>
     <Tab text="Satici">
       <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Text layoutX="259.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SATICI SAYFASI" />
+                  <Button fx:id="butSat" layoutX="274.0" layoutY="200.0" mnemonicParsing="false" onAction="#saySat" text="Button" />
+                  <TableView fx:id="tableSiparis" layoutX="14.0" layoutY="46.0" prefHeight="200.0" prefWidth="149.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+               </children></AnchorPane>
       </content>
     </Tab>
       <Tab text="Kargo">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Text layoutX="256.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="KARGO SAYFASI" />
+                  <Button fx:id="butKar" layoutX="256.0" layoutY="229.0" mnemonicParsing="false" onAction="#sayKar" text="KARGOYU YOLLA" />
+                  <TableView fx:id="tableKargo" layoutX="14.0" layoutY="44.0" prefHeight="92.0" prefWidth="574.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+               </children></AnchorPane>
         </content>
       </Tab>
   </tabs>
