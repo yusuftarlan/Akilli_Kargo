@@ -6,4 +6,5 @@ module SmartCargo {
 
     opens view;
     opens main;
+    opens controller;
 }
