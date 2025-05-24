@@ -31,6 +31,8 @@ public class ControlMain implements Initializable {
     private RadioButton radioPremium;
     @FXML
     private RadioButton radioNormal;
+    @FXML
+    private ComboBox<String> comboCities;
 
     // Product Quantities
     @FXML
@@ -67,6 +69,8 @@ public class ControlMain implements Initializable {
     private TableColumn<OrderItem, String> colPQuantities;
     @FXML
     private TableColumn<OrderItem, String> colPWeight;
+    @FXML
+    private TableColumn<OrderItem, String> colPCity;
 
     @FXML
     private TableView<OrderItem> tableNormal;
@@ -78,6 +82,8 @@ public class ControlMain implements Initializable {
     private TableColumn<OrderItem, String> colNQuantities;
     @FXML
     private TableColumn<OrderItem, String> colNWeight;
+    @FXML
+    private TableColumn<OrderItem, String> colNCity;
     @FXML
     private Button btnShip;
 
@@ -91,6 +97,8 @@ public class ControlMain implements Initializable {
     @FXML
     private TableColumn<OrderItem, String> colCargoQuantity;
     @FXML
+    private TableColumn<OrderItem, String> colCargoCity;
+    @FXML
     private Button btnSendCargo;
 
     // Data models
@@ -103,6 +111,9 @@ public class ControlMain implements Initializable {
 
     // Order counter
     private int orderCounter = 0;
+
+    @FXML
+    private Button btnTestCombo;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -125,11 +136,49 @@ public class ControlMain implements Initializable {
         normalItems  = FXCollections.observableArrayList();
         cargoItems   = FXCollections.observableArrayList();
 
+        // ComboBox için detaylı test ve konfigürasyon
+        System.out.println("ComboBox initializing...");
+        
+        if (comboCities != null) {
+            // Önceki items'ları temizle
+            comboCities.getItems().clear();
+            
+            // İstanbul ve Ankara ekle
+            comboCities.getItems().addAll("İstanbul", "Ankara");
+            
+            // ComboBox ayarları
+            comboCities.setFocusTraversable(true);
+            comboCities.setEditable(false);
+            comboCities.setPromptText("Şehir Seçiniz");
+            
+            // Default seçim yapma (isteğe bağlı)
+            comboCities.setValue(null);
+            
+            System.out.println("ComboBox items: " + comboCities.getItems());
+            System.out.println("ComboBox size: " + comboCities.getItems().size());
+            
+            // Event listeners
+            comboCities.setOnMouseClicked(event -> {
+                System.out.println("ComboBox mouse clicked!");
+            });
+            
+            comboCities.setOnShowing(event -> {
+                System.out.println("ComboBox dropdown showing!");
+            });
+            
+            comboCities.setOnAction(event -> {
+                System.out.println("Selected city: " + comboCities.getValue());
+            });
+        } else {
+            System.out.println("ERROR: comboCities is null!");
+        }
+
         // Premium table columns
         colPOrderNo.setCellValueFactory(new PropertyValueFactory<>("orderNo"));
         colPProducts.setCellValueFactory(new PropertyValueFactory<>("productName"));
         colPQuantities.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         colPWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
+        colPCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         tablePremium.setItems(premiumItems);
 
         // Normal table columns
@@ -137,7 +186,15 @@ public class ControlMain implements Initializable {
         colNProducts.setCellValueFactory(new PropertyValueFactory<>("productName"));
         colNQuantities.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         colNWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
+        colNCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         tableNormal.setItems(normalItems);
+
+        // Cargo table columns
+        colCargoOrderNo.setCellValueFactory(new PropertyValueFactory<>("orderNo"));
+        colCargoProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        colCargoQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        colCargoCity.setCellValueFactory(new PropertyValueFactory<>("city"));
+        tableShipping.setItems(cargoItems);
 
         Image image = new Image(getClass().getResource("/images/tablet.jpg").toExternalForm());
         imageview1.setImage(image);
@@ -161,12 +218,6 @@ public class ControlMain implements Initializable {
 
         Image image7 = new Image(getClass().getResource("/images/robotsüpürge.jpg").toExternalForm());
         imageview7.setImage(image7);
-
-
-
-
-
-
     }
 
     @FXML
@@ -221,6 +272,12 @@ public class ControlMain implements Initializable {
             return;
         }
 
+        // Check if city is selected
+        if (comboCities.getValue() == null || comboCities.getValue().isEmpty()) {
+            showAlert("Lütfen şehir seçiniz.");
+            return;
+        }
+
         // Check if any product is selected
         boolean hasProduct = false;
         for (Product product : products) {
@@ -242,6 +299,7 @@ public class ControlMain implements Initializable {
         }
 
         boolean isPremium = radioPremium.isSelected();
+        String selectedCity = comboCities.getValue();
         orderCounter++;
 
         // If total weight exceeds 15kg, split orders
@@ -250,12 +308,14 @@ public class ControlMain implements Initializable {
             int subOrderCounter = 0;
             for (Order order : orders) {
                 order.setOrderNo(orderCounter + "." + (++subOrderCounter));
+                order.setCity(selectedCity);
                 orderStack.push(order, isPremium);
             }
         } else {
             // Create a single order
             Order order = new Order(isPremium);
             order.setOrderNo(String.valueOf(orderCounter));
+            order.setCity(selectedCity);
             for (Product product : products) {
                 if (product.getQuantity() > 0) {
                     Product orderProduct = new Product(product.getName(), product.getWeight());
@@ -269,8 +329,9 @@ public class ControlMain implements Initializable {
         // Update both order tables
         updateOrderTable();
 
-        // Reset product quantities
+        // Reset product quantities and city selection
         resetQuantities();
+        comboCities.setValue(null);
 
         showAlert("Sipariş başarıyla oluşturuldu!");
     }
@@ -373,7 +434,7 @@ public class ControlMain implements Initializable {
                     productNames.toString(),
                     quantities.toString(),
                     String.format("%.1f kg", order.getTotalWeight()),
-                    isPremium ? "evet" : "hayır"
+                    order.getCity()
             ));
 
             tempStack.push(order, isPremium);
@@ -442,7 +503,7 @@ public class ControlMain implements Initializable {
                     productNames.toString(),
                     quantities.toString(),
                     "",
-                    ""
+                    order.getCity()
             ));
 
             tempQueue.enqueue(node, node.isPriority());
@@ -493,20 +554,43 @@ public class ControlMain implements Initializable {
         alert.showAndWait();
     }
 
+    @FXML
+    void testComboAction(ActionEvent event) {
+        System.out.println("=== COMBO TEST ===");
+        
+        if (comboCities != null) {
+            System.out.println("Items: " + comboCities.getItems());
+            System.out.println("Current value: " + comboCities.getValue());
+            System.out.println("Prompt text: " + comboCities.getPromptText());
+            System.out.println("Is editable: " + comboCities.isEditable());
+            
+            // Programmatically show dropdown
+            comboCities.show();
+            
+            // Set a test value
+            comboCities.setValue("İstanbul");
+            System.out.println("After setting İstanbul: " + comboCities.getValue());
+        } else {
+            System.out.println("ComboBox is null!");
+        }
+        
+        System.out.println("==================");
+    }
+
     // Inner class for table items
     public static class OrderItem {
         private String orderNo;
         private String productName;
         private String quantity;
         private String weight;
-        private String premium;
+        private String city;
 
-        public OrderItem(String orderNo, String productName, String quantity, String weight, String premium) {
+        public OrderItem(String orderNo, String productName, String quantity, String weight, String city) {
             this.orderNo = orderNo;
             this.productName = productName;
             this.quantity = quantity;
             this.weight = weight;
-            this.premium = premium;
+            this.city = city;
         }
 
         public String getOrderNo() {
@@ -525,8 +609,8 @@ public class ControlMain implements Initializable {
             return weight;
         }
 
-        public String getPremium() {
-            return premium;
+        public String getCity() {
+            return city;
         }
     }
 }

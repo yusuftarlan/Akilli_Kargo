@@ -7,6 +7,7 @@ public class Order {
     private String orderNo;
     private List<Product> products;
     private boolean isPremium;
+    private String city;
 
     public Order(boolean isPremium) {
         this.products = new ArrayList<>();
@@ -39,6 +40,14 @@ public class Order {
             totalWeight += product.getTotalWeight();
         }
         return totalWeight;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     @Override

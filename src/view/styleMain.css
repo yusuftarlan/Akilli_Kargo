@@ -82,17 +82,6 @@
     -fx-text-fill: #4a2e1f;
 }
 
-/* ComboBox */
-.combo-box {
-    -fx-background-color: white;
-    -fx-border-color: #f5cba7;
-    -fx-border-radius: 4;
-}
-
-.combo-box:focused {
-    -fx-border-color: #f5a623;
-}
-
 /* Sekmeler */
 .tab-pane .tab-header-area {
     -fx-background-color: #fdebd0;
