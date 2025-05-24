@@ -8,104 +8,128 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="800.0" stylesheets="@styleMain.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ControlMain">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="631.0" prefWidth="865.0" stylesheets="@styleMain.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ControlMain">
     <tabs>
         <Tab text="Market">
             <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="609.0" prefWidth="867.0">
                     <children>
-                        <Text layoutX="365.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="MARKET SAYFASI" />
-                        <Button fx:id="btnOrder" layoutX="365.0" layoutY="526.0" mnemonicParsing="false" onAction="#handleOrder" prefHeight="40.0" prefWidth="120.0" text="Sipariş Ver" />
+                        <Text layoutX="286.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="MARKET SAYFASI" />
+                        <Button fx:id="btnOrder" layoutX="322.0" layoutY="546.0" mnemonicParsing="false" onAction="#handleOrder" prefHeight="40.0" prefWidth="120.0" text="Sipariş Ver" />
 
-                        <VBox layoutX="50.0" layoutY="60.0" prefHeight="450.0" prefWidth="700.0" spacing="15.0">
+                        <VBox layoutX="4.0" layoutY="60.0" prefHeight="477.0" prefWidth="858.0" spacing="15.0">
                             <!-- Product 1 -->
                             <children>
-                                <HBox spacing="10.0">
+                                <HBox prefHeight="66.0" prefWidth="816.0" spacing="10.0">
                                     <children>
-                                        <Text text="Ürün 1 - 1kg" wrappingWidth="150.0" />
+                                        <ImageView fx:id="imageview1" fitHeight="67.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../main/resources/images/tablet.jpg" />
+                                 </image>
+                                        </ImageView>
                                         <Button fx:id="btnMinus1" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
                                         <TextField fx:id="txtQuantity1" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
                                         <Button fx:id="btnPlus1" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
+                                        <Text text="Ürün 1 - 1kg" wrappingWidth="150.0" />
+                                        <ImageView fx:id="imageview2" fitHeight="67.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../main/resources/images/laptop.jpg" />
+                                 </image>
+                                        </ImageView>
+                                        <Button fx:id="btnMinus2" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
+                                        <TextField fx:id="txtQuantity2" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
+                                        <Button fx:id="btnPlus2" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
+                                        <Text text="Ürün 2 - 2kg" wrappingWidth="150.0" />
                                     </children>
                                 </HBox>
 
                                 <!-- Product 2 -->
-                                <HBox spacing="10.0">
-                                    <children>
-                                        <Text text="Ürün 2 - 2kg" wrappingWidth="150.0" />
-                                        <Button fx:id="btnMinus2" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
-                                        <TextField fx:id="txtQuantity2" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
-                                        <Button fx:id="btnPlus2" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
-                                    </children>
-                                </HBox>
+                                <HBox spacing="10.0" />
 
                                 <!-- Product 3 -->
-                                <HBox spacing="10.0">
+                                <HBox prefHeight="76.0" prefWidth="790.0" spacing="10.0">
                                     <children>
-                                        <Text text="Ürün 3 - 3kg" wrappingWidth="150.0" />
+                                        <ImageView fx:id="imageview3" fitHeight="67.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../main/resources/images/monitör.jpg" />
+                                 </image>
+                                        </ImageView>
                                         <Button fx:id="btnMinus3" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
                                         <TextField fx:id="txtQuantity3" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
                                         <Button fx:id="btnPlus3" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
+                                        <Text text="Ürün 3 - 3kg" wrappingWidth="150.0" />
+                                        <ImageView fx:id="imageview4" fitHeight="67.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../main/resources/images/kasa.jpg" />
+                                 </image>
+                                        </ImageView>
+                                        <Button fx:id="btnMinus4" mnemonicParsing="false" onAction="#handleDecrease" prefHeight="26.0" prefWidth="25.0" text="-" />
+                                        <TextField fx:id="txtQuantity4" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
+                                        <Button fx:id="btnPlus4" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
+                                        <Text text="Ürün 4 - 4kg" wrappingWidth="150.0" />
                                     </children>
                                 </HBox>
 
                                 <!-- Product 4 -->
-                                <HBox spacing="10.0">
-                                    <children>
-                                        <Text text="Ürün 4 - 4kg" wrappingWidth="150.0" />
-                                        <Button fx:id="btnMinus4" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
-                                        <TextField fx:id="txtQuantity4" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
-                                        <Button fx:id="btnPlus4" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
-                                    </children>
-                                </HBox>
+                                <HBox spacing="10.0" />
 
                                 <!-- Product 5 -->
                                 <HBox spacing="10.0">
                                     <children>
-                                        <Text text="Ürün 5 - 5kg" wrappingWidth="150.0" />
+                                        <ImageView fx:id="imageview5" fitHeight="67.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../main/resources/images/airfryer.jpg" />
+                                 </image>
+                                        </ImageView>
                                         <Button fx:id="btnMinus5" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
                                         <TextField fx:id="txtQuantity5" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
                                         <Button fx:id="btnPlus5" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
+                                        <Text text="Ürün 5 - 5kg" wrappingWidth="150.0" />
+                                        <ImageView fx:id="imageview6" fitHeight="67.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../main/resources/images/tost makinesi.jpg" />
+                                 </image>
+                                        </ImageView>
+                                        <Button fx:id="btnMinus6" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
+                                        <TextField fx:id="txtQuantity6" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
+                                        <Button fx:id="btnPlus6" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
+                                        <Text text="Ürün 6 - 3kg" wrappingWidth="150.0" />
                                     </children>
                                 </HBox>
 
                                 <!-- Product 6 -->
-                                <HBox spacing="10.0">
-                                    <children>
-                                        <Text text="Ürün 6 - 3kg" wrappingWidth="150.0" />
-                                        <Button fx:id="btnMinus6" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
-                                        <TextField fx:id="txtQuantity6" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
-                                        <Button fx:id="btnPlus6" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
-                                    </children>
-                                </HBox>
+                                <HBox spacing="10.0" />
 
                                 <!-- Product 7 -->
-                                <HBox spacing="10.0">
+                                <HBox prefHeight="76.0" prefWidth="790" spacing="10.0">
                                     <children>
-                                        <Text text="Ürün 7 - 2kg" wrappingWidth="150.0" />
-                                        <Button fx:id="btnMinus7" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
-                                        <TextField fx:id="txtQuantity7" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
+                                        <ImageView fx:id="imageview7" fitHeight="67.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../main/resources/images/robotsüpürge.jpg" />
+                                 </image>
+                                        </ImageView>
                                         <Button fx:id="btnPlus7" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
+                                        <TextField fx:id="txtQuantity7" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
+                                        <Button fx:id="btnMinus7" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
+                                        <Text text="Ürün 7 - 2kg" wrappingWidth="150.0" />
+                                        <RadioButton fx:id="radioNormal" mnemonicParsing="false" selected="true" text="Normal Müşteri">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="customerType" />
+                                            </toggleGroup></RadioButton>
+                                        <RadioButton fx:id="radioPremium" mnemonicParsing="false" text="Premium Müşteri" toggleGroup="$customerType" />
                                     </children>
                                 </HBox>
 
                                 <!-- Customer Type Selection -->
-                                <HBox alignment="CENTER" spacing="20.0">
-                                    <children>
-                                        <RadioButton fx:id="radioPremium" mnemonicParsing="false" text="Premium Müşteri">
-                                            <toggleGroup>
-                                                <ToggleGroup fx:id="customerType" />
-                                            </toggleGroup>
-                                        </RadioButton>
-                                        <RadioButton fx:id="radioNormal" mnemonicParsing="false" selected="true" text="Normal Müşteri" toggleGroup="$customerType" />
-                                    </children>
-                                </HBox>
+                                <HBox alignment="CENTER" spacing="20.0" />
                             </children>
                         </VBox>
                     </children>
@@ -123,9 +147,9 @@
                         <VBox layoutX="50.0" layoutY="60.0" prefWidth="700.0" spacing="10.0">
                             <children>
                                 <Text style="-fx-font-size: 16; -fx-font-weight: bold;" text="Premium Siparişler">
-                           <font>
-                              <Font name="Arial" size="12.0" />
-                           </font></Text>
+                                    <font>
+                                        <Font name="Arial" size="12.0" />
+                                    </font></Text>
                                 <TableView fx:id="tablePremium" prefHeight="217.0" prefWidth="700.0">
                                     <columns>
                                         <TableColumn fx:id="colPOrderNo" prefWidth="100.0" text="Siparis no" />

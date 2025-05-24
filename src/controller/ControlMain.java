@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import model.Order;
 import model.Product;
 import util.Node;
@@ -52,7 +54,9 @@ public class ControlMain implements Initializable {
     @FXML
     private Button btnMinus1, btnMinus2, btnMinus3, btnMinus4, btnMinus5, btnMinus6, btnMinus7;
 
-    // Seller Page
+    @FXML
+    private ImageView imageview1,imageview2,imageview3,imageview4,imageview5,imageview6,imageview7;
+
     @FXML
     private TableView<OrderItem> tablePremium;
     @FXML
@@ -134,6 +138,35 @@ public class ControlMain implements Initializable {
         colNQuantities.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         colNWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
         tableNormal.setItems(normalItems);
+
+        Image image = new Image(getClass().getResource("/images/tablet.jpg").toExternalForm());
+        imageview1.setImage(image);
+
+        Image image2 = new Image(getClass().getResource("/images/laptop.jpg").toExternalForm());
+        imageview2.setImage(image2);
+
+        Image image3 = new Image(getClass().getResource("/images/monitör.jpg").toExternalForm());
+        imageview3.setImage(image3);
+
+
+        Image image4 = new Image(getClass().getResource("/images/kasa.jpg").toExternalForm());
+        imageview4.setImage(image4);
+
+        Image image5 = new Image(getClass().getResource("/images/airfryer.jpg").toExternalForm());
+        imageview5.setImage(image5);
+
+
+        Image image6 = new Image(getClass().getResource("/images/tost makinesi.jpg").toExternalForm());
+        imageview6.setImage(image6);
+
+        Image image7 = new Image(getClass().getResource("/images/robotsüpürge.jpg").toExternalForm());
+        imageview7.setImage(image7);
+
+
+
+
+
+
     }
 
     @FXML
