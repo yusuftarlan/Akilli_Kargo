@@ -2,15 +2,17 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import util.Node;
+import util.Stack;
 
 public class Order {
     private String orderNo;
-    private List<Product> products;
+    private Stack<Product> products;
     private boolean isPremium;
     private String city;
 
     public Order(boolean isPremium) {
-        this.products = new ArrayList<>();
+        this.products = new Stack<>();
         this.isPremium = isPremium;
     }
 
@@ -23,11 +25,42 @@ public class Order {
     }
 
     public void addProduct(Product product) {
-        products.add(product);
+        products.push(product, false);
+    }
+
+    public Product removeProduct() {
+        if (!products.isEmpty()) {
+            Node<Product> node = products.pop();
+            return node.getData();
+        }
+        return null;
     }
 
     public List<Product> getProducts() {
-        return products;
+        List<Product> productList = new ArrayList<>();
+        Stack<Product> tempStack = new Stack<>();
+        
+        while (!products.isEmpty()) {
+            Node<Product> node = products.pop();
+            Product product = node.getData();
+            productList.add(product);
+            tempStack.push(product, false);
+        }
+        
+        while (!tempStack.isEmpty()) {
+            Node<Product> node = tempStack.pop();
+            products.push(node.getData(), false);
+        }
+        
+        return productList;
+    }
+
+    public boolean hasProducts() {
+        return !products.isEmpty();
+    }
+
+    public int getProductCount() {
+        return products.size();
     }
 
     public boolean isPremium() {
@@ -36,7 +69,8 @@ public class Order {
 
     public double getTotalWeight() {
         double totalWeight = 0;
-        for (Product product : products) {
+        List<Product> productList = getProducts();
+        for (Product product : productList) {
             totalWeight += product.getTotalWeight();
         }
         return totalWeight;
@@ -53,7 +87,8 @@ public class Order {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Product product : products) {
+        List<Product> productList = getProducts();
+        for (Product product : productList) {
             sb.append(product.getName()).append(" (").append(product.getQuantity()).append("), ");
         }
         if (sb.length() > 2) {

@@ -1,12 +1,14 @@
 package util;
 
+import java.util.EmptyStackException;
+
 public class Stack<T> {
     private Node<T> top;
     private int size;
 
     public Stack() {
-        this.top = null;
-        this.size = 0;
+        top = null;
+        size = 0;
     }
 
     public boolean isEmpty() {
@@ -14,65 +16,63 @@ public class Stack<T> {
     }
 
     public void push(T data, boolean isPremium) {
-        Node<T> newNode = new Node<>(data, isPremium);
-        
+        Node<T> newNode = new Node<>(data);
+        newNode.setPriority(isPremium);
+
+        if (isEmpty()) {
+            top = newNode;
+            size++;
+            return;
+        }
+
         if (isPremium) {
-            // Premium orders go to the top of premium section
-            insertPremiumNode(newNode);
+            // Insert below existing premium nodes but above normals
+            if (!top.isPriority()) {
+                // No premium at top, put new premium on top
+                newNode.next = top;
+                top = newNode;
+            } else {
+                // Traverse premium block
+                Node<T> current = top;
+                while (current.next != null && current.next.isPriority()) {
+                    current = current.next;
+                }
+                newNode.next = current.next;
+                current.next = newNode;
+            }
         } else {
-            // Normal orders go to the bottom
-            insertNormalNode(newNode);
+            // Normal order -> insert below last premium (or at top if none premium)
+            if (!top.isPriority()) {
+                // No premium present, push on top
+                newNode.next = top;
+                top = newNode;
+            } else {
+                Node<T> current = top;
+                while (current.next != null && current.next.isPriority()) {
+                    current = current.next;
+                }
+                newNode.next = current.next;
+                current.next = newNode;
+            }
         }
         size++;
     }
-    
-    private void insertPremiumNode(Node<T> newNode) {
-        if (top == null || !top.isPriority()) {
-            newNode.setNext(top);
-            top = newNode;
-        } else {
-            // Find position among premium orders (LIFO for premium)
-            newNode.setNext(top);
-            top = newNode;
-        }
-    }
-    
-    private void insertNormalNode(Node<T> newNode) {
-        if (top == null) {
-            top = newNode;
-            return;
-        }
-        
-        // Find the end of premium orders
-        Node<T> current = top;
-        Node<T> prev = null;
-        
-        while (current != null && current.isPriority()) {
-            prev = current;
-            current = current.getNext();
-        }
-        
-        if (prev == null) {
-            // No premium orders, insert at top
-            newNode.setNext(top);
-            top = newNode;
-        } else {
-            // Insert after premium orders, at beginning of normal orders
-            newNode.setNext(prev.getNext());
-            prev.setNext(newNode);
-        }
-    }
 
     public Node<T> pop() {
-        if (isEmpty()) return null;
-        
-        Node<T> result = top;
-        top = top.getNext();
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        Node<T> popped = top;
+        top = top.next;
+        popped.next = null;
         size--;
-        return result;
+        return popped;
     }
 
     public Node<T> peek() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
         return top;
     }
 
@@ -84,19 +84,19 @@ public class Stack<T> {
     public Queue<T> toQueue(int capacity) {
         Queue<T> queue = new Queue<>(capacity);
         Stack<T> tempStack = new Stack<>();
-        
-        // Reverse order to maintain priority
+
+        // First reverse the stack to get FIFO order
         while (!isEmpty()) {
             Node<T> node = pop();
             tempStack.push(node.getData(), node.isPriority());
         }
-        
+
+        // Now add all items to the queue with their priority
         while (!tempStack.isEmpty()) {
             Node<T> node = tempStack.pop();
             queue.enqueue(node, node.isPriority());
-            push(node.getData(), node.isPriority()); // Restore original stack
         }
-        
+
         return queue;
     }
 }
