@@ -105,8 +105,8 @@ public class ControlMain implements Initializable {
 
     // Data models
     private List<Product> products;
-    private Stack<Order> orderStack;
-    private Queue<Order> orderQueue;
+    private Queue<Order> sellerOrderQueue;
+    private Queue<Order> cargoQueue;
     private ObservableList<OrderItem> premiumItems;
     private ObservableList<OrderItem> normalItems;
     private ObservableList<OrderItem> cargoItems;
@@ -130,8 +130,8 @@ public class ControlMain implements Initializable {
         products.add(new Product("Ürün 7", 2.0));
 
         // Initialize data structures
-        orderStack = new Stack<>();
-        orderQueue = new Queue<>(100);
+        sellerOrderQueue = new Queue<>(100);
+        cargoQueue = new Queue<>(100);
 
         // Initialize observable lists
         premiumItems = FXCollections.observableArrayList();
@@ -327,7 +327,7 @@ public class ControlMain implements Initializable {
             for (Order order : orders) {
                 order.setOrderNo(orderCounter + "." + (++subOrderCounter));
                 order.setCity(selectedCity);
-                orderStack.push(order, isPremium);
+                sellerOrderQueue.enqueue(new Node<>(order), isPremium);
             }
         } else {
             // Create a single order
@@ -341,7 +341,7 @@ public class ControlMain implements Initializable {
                     order.addProduct(orderProduct);
                 }
             }
-            orderStack.push(order, isPremium);
+            sellerOrderQueue.enqueue(new Node<>(order), isPremium);
         }
 
         // Update both order tables
@@ -491,10 +491,10 @@ public class ControlMain implements Initializable {
         premiumItems.clear();
         normalItems.clear();
 
-        Stack<Order> tempStack = new Stack<>();
+        Queue<Order> tempQueue = new Queue<>(100);
 
-        while (!orderStack.isEmpty()) {
-            Node<Order> node = orderStack.pop();
+        while (!sellerOrderQueue.isEmpty()) {
+            Node<Order> node = sellerOrderQueue.dequeue();
             Order order = node.getData();
             boolean isPremium = node.isPriority();
 
@@ -520,54 +520,55 @@ public class ControlMain implements Initializable {
                     order.getCity()
             ));
 
-            tempStack.push(order, isPremium);
+            tempQueue.enqueue(node, isPremium);
         }
 
-        // Restore stack
-        while (!tempStack.isEmpty()) {
-            Node<Order> node = tempStack.pop();
-            orderStack.push(node.getData(), node.isPriority());
+        // Restore queue
+        while (!tempQueue.isEmpty()) {
+            Node<Order> node = tempQueue.dequeue();
+            sellerOrderQueue.enqueue(node, node.isPriority());
         }
     }
 
     @FXML
     void handleShip(ActionEvent event) {
-        if (orderStack.isEmpty()) {
+        if (sellerOrderQueue.isEmpty()) {
             showAlert("Gönderilecek sipariş bulunmamaktadır.");
             return;
         }
 
-        // Get the top order from the stack
-        Node<Order> node = orderStack.pop();
-        Order topOrder = node.getData();
-        boolean isPremium = node.isPriority();
-
-        // Add the order to the cargo queue
-        if (orderQueue == null) {
-            orderQueue = new Queue<>(100);
+        Node<Order> orderToShip = null;
+        
+        if (sellerOrderQueue.getNumOfPriority() > 0) {
+            orderToShip = sellerOrderQueue.dequeue();
+        } else {
+            orderToShip = sellerOrderQueue.dequeue();
         }
-        orderQueue.enqueue(new Node<>(topOrder), isPremium);
 
-        // Update both order tables
-        updateOrderTable();
+        if (orderToShip != null) {
+            Order order = orderToShip.getData();
+            boolean isPremium = orderToShip.isPriority();
 
-        // Update cargo table
-        updateCargoTable();
+            cargoQueue.enqueue(new Node<>(order), isPremium);
 
-        showAlert("Sipariş " + topOrder.getOrderNo() + " kargoya gönderildi!");
+            updateOrderTable();
+
+            updateCargoTable();
+
+            String orderType = isPremium ? "Premium" : "Normal";
+            showAlert(orderType + " sipariş " + order.getOrderNo() + " kargoya gönderildi!");
+        }
     }
 
     private void updateCargoTable() {
         cargoItems.clear();
 
-        // Create a temporary queue to preserve the original
         Queue<Order> tempQueue = new Queue<>(100);
 
-        while (!orderQueue.isEmpty()) {
-            Node<Order> node = orderQueue.dequeue();
+        while (!cargoQueue.isEmpty()) {
+            Node<Order> node = cargoQueue.dequeue();
             Order order = node.getData();
 
-            // Group products for each order
             StringBuilder productNames = new StringBuilder();
             StringBuilder quantities = new StringBuilder();
 
@@ -580,7 +581,6 @@ public class ControlMain implements Initializable {
                 quantities.append(product.getQuantity());
             }
 
-            // Add a row for the entire order
             cargoItems.add(new OrderItem(
                     order.getOrderNo(),
                     productNames.toString(),
@@ -592,24 +592,21 @@ public class ControlMain implements Initializable {
             tempQueue.enqueue(node, node.isPriority());
         }
 
-        // Restore queue
         while (!tempQueue.isEmpty()) {
             Node<Order> node = tempQueue.dequeue();
-            orderQueue.enqueue(node, node.isPriority());
+            cargoQueue.enqueue(node, node.isPriority());
         }
     }
 
     @FXML
     void handleSendCargo(ActionEvent event) {
-        if (orderQueue.isEmpty()) {
+        if (cargoQueue.isEmpty()) {
             showAlert("Gönderilecek kargo bulunmamaktadır.");
             return;
         }
 
-        // Remove first order from queue (just one order at a time)
-        Node<Order> node = orderQueue.dequeue();
+        Node<Order> node = cargoQueue.dequeue();
 
-        // Update cargo table
         updateCargoTable();
 
         showAlert("Sipariş " + node.getData().getOrderNo() + " başarıyla teslim edildi!");
