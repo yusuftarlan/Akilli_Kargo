@@ -196,12 +196,13 @@
                     <children>
                         <Text layoutX="350.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="KARGO SAYFASI" />
                         <Button fx:id="btnSendCargo" layoutX="350.0" layoutY="526.0" mnemonicParsing="false" onAction="#handleSendCargo" prefHeight="40.0" prefWidth="150.0" text="Kargoyu Yolla" />
-                        <TableView fx:id="tableShipping" layoutX="50.0" layoutY="60.0" prefHeight="450.0" prefWidth="700.0">
+                        <TableView fx:id="tableShipping" layoutX="50.0" layoutY="60.0" prefHeight="450.0" prefWidth="750.0">
                             <columns>
                                 <TableColumn fx:id="colCargoOrderNo" prefWidth="100.0" text="Siparis no" />
-                                <TableColumn fx:id="colCargoProduct" prefWidth="250.0" text="Ürün Adı" />
-                                <TableColumn fx:id="colCargoQuantity" prefWidth="150.0" text="Adet" />
-                                <TableColumn fx:id="colCargoCity" prefWidth="200.0" text="Şehir" />
+                                <TableColumn fx:id="colCargoProduct" prefWidth="200.0" text="Ürün Adı" />
+                                <TableColumn fx:id="colCargoQuantity" prefWidth="100.0" text="Adet" />
+                                <TableColumn fx:id="colCargoWeight" prefWidth="100.0" text="Ağırlık" />
+                                <TableColumn fx:id="colCargoCity" prefWidth="150.0" text="Şehir" />
                             </columns>
                         </TableView>
                     </children>

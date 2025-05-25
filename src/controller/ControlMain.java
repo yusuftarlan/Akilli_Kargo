@@ -97,6 +97,8 @@ public class ControlMain implements Initializable {
     @FXML
     private TableColumn<OrderItem, String> colCargoQuantity;
     @FXML
+    private TableColumn<OrderItem, String> colCargoWeight;
+    @FXML
     private TableColumn<OrderItem, String> colCargoCity;
     @FXML
     private Button btnSendCargo;
@@ -208,6 +210,7 @@ public class ControlMain implements Initializable {
         colCargoOrderNo.setCellValueFactory(new PropertyValueFactory<>("orderNo"));
         colCargoProduct.setCellValueFactory(new PropertyValueFactory<>("productName"));
         colCargoQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        colCargoWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
         colCargoCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         tableShipping.setItems(cargoItems);
 
@@ -353,70 +356,135 @@ public class ControlMain implements Initializable {
 
     private List<Order> splitOrder(boolean isPremium) {
         List<Order> orders = new ArrayList<>();
-        List<Product> selectedProducts = new ArrayList<>();
-
-        // Get selected products
+        
+        // Create a list of individual product items (each with quantity 1)
+        List<Product> individualItems = new ArrayList<>();
+        
+        // Get selected products and create individual items
         for (Product product : products) {
             if (product.getQuantity() > 0) {
-                Product orderProduct = new Product(product.getName(), product.getWeight());
-                orderProduct.setQuantity(product.getQuantity());
-                selectedProducts.add(orderProduct);
+                for (int i = 0; i < product.getQuantity(); i++) {
+                    Product individualItem = new Product(product.getName(), product.getWeight());
+                    individualItem.setQuantity(1);
+                    individualItems.add(individualItem);
+                }
             }
         }
 
-        Order currentOrder = new Order(isPremium);
-        double currentWeight = 0;
-
-        for (Product product : selectedProducts) {
-            // If product itself exceeds 15kg, need to split it into multiple orders
-            if (product.getWeight() > 15.0) {
-                int remainingQuantity = product.getQuantity();
-                while (remainingQuantity > 0) {
-                    Order singleProductOrder = new Order(isPremium);
-                    Product singleProduct = new Product(product.getName(), product.getWeight());
-                    singleProduct.setQuantity(1);
-                    singleProductOrder.addProduct(singleProduct);
-                    orders.add(singleProductOrder);
-                    remainingQuantity--;
-                }
+        // If any single product exceeds 15kg, handle it separately
+        List<Product> heavyItems = new ArrayList<>();
+        List<Product> normalItems = new ArrayList<>();
+        
+        for (Product item : individualItems) {
+            if (item.getWeight() > 15.0) {
+                heavyItems.add(item);
             } else {
-                // Check if adding this product would exceed weight limit
-                double productWeight = product.getTotalWeight();
-                int remainingQuantity = product.getQuantity();
-
-                while (remainingQuantity > 0) {
-                    // Calculate how many items of this product can fit
-                    double availableWeight = 15.0 - currentWeight;
-                    int itemsToAdd = Math.min(remainingQuantity, (int) (availableWeight / product.getWeight()));
-
-                    if (itemsToAdd > 0) {
-                        // Add items to current order
-                        Product partialProduct = new Product(product.getName(), product.getWeight());
-                        partialProduct.setQuantity(itemsToAdd);
-                        currentOrder.addProduct(partialProduct);
-
-                        currentWeight += partialProduct.getTotalWeight();
-                        remainingQuantity -= itemsToAdd;
-                    }
-
-                    // If we can't add more items or we've added all items
-                    if (itemsToAdd == 0 || remainingQuantity == 0) {
-                        if (currentOrder.getProducts().size() > 0) {
-                            orders.add(currentOrder);
-                            currentOrder = new Order(isPremium);
-                            currentWeight = 0;
-                        }
-                    }
-                }
+                normalItems.add(item);
             }
         }
 
-        // Add final order if it has products
-        if (currentOrder.getProducts().size() > 0) {
-            orders.add(currentOrder);
+        // Create orders for heavy items (each gets its own order)
+        for (Product heavyItem : heavyItems) {
+            Order heavyOrder = new Order(isPremium);
+            heavyOrder.addProduct(heavyItem);
+            orders.add(heavyOrder);
+        }
+
+        // Use bin packing algorithm for normal items
+        orders.addAll(optimizedBinPacking(normalItems, isPremium));
+
+        return orders;
+    }
+
+    /**
+     * Optimized bin packing algorithm to group products efficiently
+     * Uses Best Fit Decreasing approach for better space utilization
+     */
+    private List<Order> optimizedBinPacking(List<Product> items, boolean isPremium) {
+        List<Order> orders = new ArrayList<>();
+        
+        if (items.isEmpty()) {
+            return orders;
+        }
+
+        // Sort items by weight in descending order (heaviest first)
+        items.sort((a, b) -> Double.compare(b.getWeight(), a.getWeight()));
+
+        List<OrderBin> bins = new ArrayList<>();
+
+        for (Product item : items) {
+            // Find the best bin that can fit this item
+            OrderBin bestBin = null;
+            double minRemainingSpace = Double.MAX_VALUE;
+
+            for (OrderBin bin : bins) {
+                double remainingSpace = 15.0 - bin.currentWeight;
+                if (remainingSpace >= item.getWeight() && remainingSpace < minRemainingSpace) {
+                    bestBin = bin;
+                    minRemainingSpace = remainingSpace;
+                }
+            }
+
+            if (bestBin != null) {
+                // Add item to the best fitting bin
+                bestBin.addProduct(item);
+            } else {
+                // Create a new bin for this item
+                OrderBin newBin = new OrderBin(isPremium);
+                newBin.addProduct(item);
+                bins.add(newBin);
+            }
+        }
+
+        // Convert bins to orders
+        for (OrderBin bin : bins) {
+            orders.add(bin.toOrder());
         }
 
         return orders;
+    }
+
+    /**
+     * Helper class for bin packing algorithm
+     */
+    private static class OrderBin {
+        private List<Product> products;
+        private double currentWeight;
+        private boolean isPremium;
+
+        public OrderBin(boolean isPremium) {
+            this.products = new ArrayList<>();
+            this.currentWeight = 0.0;
+            this.isPremium = isPremium;
+        }
+
+        public void addProduct(Product product) {
+            // Check if product with same name already exists in this bin
+            boolean merged = false;
+            for (Product existingProduct : products) {
+                if (existingProduct.getName().equals(product.getName()) && 
+                    existingProduct.getWeight() == product.getWeight()) {
+                    // Merge quantities
+                    existingProduct.setQuantity(existingProduct.getQuantity() + product.getQuantity());
+                    merged = true;
+                    break;
+                }
+            }
+            
+            if (!merged) {
+                products.add(product);
+            }
+            
+            currentWeight += product.getTotalWeight();
+        }
+
+        public Order toOrder() {
+            Order order = new Order(isPremium);
+            for (Product product : products) {
+                order.addProduct(product);
+            }
+            return order;
+        }
     }
 
     private void updateOrderTable() {
@@ -517,7 +585,7 @@ public class ControlMain implements Initializable {
                     order.getOrderNo(),
                     productNames.toString(),
                     quantities.toString(),
-                    "",
+                    String.format("%.1f kg", order.getTotalWeight()),
                     order.getCity()
             ));
 
