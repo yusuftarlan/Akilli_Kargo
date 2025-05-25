@@ -136,15 +136,31 @@ public class ControlMain implements Initializable {
         normalItems  = FXCollections.observableArrayList();
         cargoItems   = FXCollections.observableArrayList();
 
-        // ComboBox için detaylı test ve konfigürasyon
+        // ComboBox için 81 il listesi
         System.out.println("ComboBox initializing...");
         
         if (comboCities != null) {
             // Önceki items'ları temizle
             comboCities.getItems().clear();
             
-            // İstanbul ve Ankara ekle
-            comboCities.getItems().addAll("İstanbul", "Ankara");
+            // Türkiye'nin 81 ili (alfabetik sıra)
+            String[] turkishCities = {
+                "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Aksaray", "Amasya", "Ankara", 
+                "Antalya", "Ardahan", "Artvin", "Aydın", "Balıkesir", "Bartın", "Batman", 
+                "Bayburt", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", 
+                "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Düzce", "Edirne", 
+                "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", 
+                "Gümüşhane", "Hakkari", "Hatay", "Iğdır", "Isparta", "İstanbul", "İzmir", 
+                "Kahramanmaraş", "Karabük", "Karaman", "Kars", "Kastamonu", "Kayseri", 
+                "Kilis", "Kırıkkale", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", 
+                "Kütahya", "Malatya", "Manisa", "Mardin", "Mersin", "Muğla", "Muş", 
+                "Nevşehir", "Niğde", "Ordu", "Osmaniye", "Rize", "Sakarya", "Samsun", 
+                "Şanlıurfa", "Siirt", "Sinop", "Şırnak", "Sivas", "Tekirdağ", "Tokat", 
+                "Trabzon", "Tunceli", "Uşak", "Van", "Yalova", "Yozgat", "Zonguldak"
+            };
+            
+            // Tüm illeri ComboBox'a ekle
+            comboCities.getItems().addAll(turkishCities);
             
             // ComboBox ayarları
             comboCities.setFocusTraversable(true);
@@ -154,8 +170,7 @@ public class ControlMain implements Initializable {
             // Default seçim yapma (isteğe bağlı)
             comboCities.setValue(null);
             
-            System.out.println("ComboBox items: " + comboCities.getItems());
-            System.out.println("ComboBox size: " + comboCities.getItems().size());
+            System.out.println("ComboBox items: " + comboCities.getItems().size() + " il eklendi");
             
             // Event listeners
             comboCities.setOnMouseClicked(event -> {

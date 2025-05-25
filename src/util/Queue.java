@@ -1,24 +1,25 @@
 package util;
 
-
+import java.util.*;
 import model.Siparis;
 
-import java.util.Objects;
-
-public class Queue <T>{
+public class Queue<T> {
     public Node<T> front;
     public Node<T> rear;
     private int size;
     private final int capacity;
     private int numOfPriority;
 
-    public Queue(int capacity){
+    // Şehir bazlı hızlı erişim için
+    private Map<String, List<Node<T>>> cityMap;
 
+    public Queue(int capacity){
         this.capacity = capacity;
         front = null;
         rear = null;
         size = 0;
         numOfPriority = 0;
+        cityMap = new HashMap<>();
     }
 
     public void enqueue(Node<T> node,boolean priority){
@@ -65,27 +66,42 @@ public class Queue <T>{
             }
             size++;
         }
+
+        // Şehir map'ine ekle (eğer Siparis ise)
+        if (node.getData() instanceof Siparis) {
+            Siparis siparis = (Siparis) node.getData();
+            cityMap.computeIfAbsent(siparis.getSehir(), k -> new ArrayList<>()).add(node);
+        }
     }
 
     public Node<T> dequeue(){
-        //Sıra boşsa
         if(isEmpty()){
             System.out.println("Queue is empty");
             return null;
         }
         Node<T> temp = front;
-        //Sırada tek eleman varsa
+        
+        // City map'ten kaldır
+        if (temp.getData() instanceof Siparis) {
+            Siparis siparis = (Siparis) temp.getData();
+            List<Node<T>> cityNodes = cityMap.get(siparis.getSehir());
+            if (cityNodes != null) {
+                cityNodes.remove(temp);
+                if (cityNodes.isEmpty()) {
+                    cityMap.remove(siparis.getSehir());
+                }
+            }
+        }
+        
         if (front == rear) {
             front = null;
             rear = null;
-        }
-        //Diğer bütün durumlar
-        else {
+        } else {
             front = front.next;
             temp.next = null;
         }
         size--;
-        if (numOfPriority > 0){
+        if (numOfPriority > 0 && temp.isPriority()){
             numOfPriority--;
         }
         return temp;
@@ -105,32 +121,72 @@ public class Queue <T>{
             System.out.println("Rear");
         }
     }
-    public Siparis[] kargoHazirla(){
-        int i = 1;
-
-        Siparis [] kargo = new Siparis[10];
-        kargo[0] = (Siparis)dequeue().getData();
+    public Siparis[] kargoHazirla() {
+        if (isEmpty()) {
+            System.out.println("Queue is empty, cannot prepare cargo");
+            return new Siparis[0];
+        }
+        
+        int i = 0;
+        Siparis[] kargo = new Siparis[Math.min(size, 10)];
+        
+        Node<T> firstNode = dequeue();
+        if (firstNode == null) {
+            return new Siparis[0];
+        }
+        
+        kargo[i++] = castToSiparis(firstNode.getData());
         String hedefSehir = kargo[0].getSehir();
-        boolean frontCikti = true;
-
-        while (frontCikti){
-            if (((Siparis)front.getData()).getSehir().equals(hedefSehir)){
-                System.out.println("front çikti");
-                kargo[i++] = (Siparis) dequeue().getData();
-            }else{
-                frontCikti = false;
+        
+        // Front'tan aynı şehir siparişlerini çıkar
+        while (!isEmpty() && front != null) {
+            Siparis frontSiparis = castToSiparis(front.getData());
+            if (frontSiparis.getSehir().equals(hedefSehir) && i < kargo.length) {
+                kargo[i++] = castToSiparis(dequeue().getData());
+            } else {
+                break;
             }
         }
-
-        Node<T> temp = front;
-        while (temp.next != null){
-            if (((Siparis)temp.next.getData()).getSehir().equals(hedefSehir)){
-                System.out.println("ortadan çikti");
-                kargo[i++] = (Siparis) temp.next.getData();
-                temp.next = temp.next.next;
+        
+        // Ortadan aynı şehir siparişlerini çıkar
+        Node<T> current = front;
+        while (current != null && current.next != null && i < kargo.length) {
+            Siparis nextSiparis = castToSiparis(current.next.getData());
+            if (nextSiparis.getSehir().equals(hedefSehir)) {
+                kargo[i++] = nextSiparis;
+                current.next = current.next.next;
+                size--;
+                if (current.next == null) {
+                    rear = current;
+                }
+            } else {
+                current = current.next;
             }
-            temp = temp.next;
         }
+        
+        // Sadece dolu elemanları döndür
+        Siparis[] result = new Siparis[i];
+        System.arraycopy(kargo, 0, result, 0, i);
+        return result;
+    }
+
+    // Şehir bazlı kargo hazırlama (optimized)
+    public List<Siparis> kargoHazirlaOptimized(String targetCity) {
+        List<Siparis> kargo = new ArrayList<>();
+        List<Node<T>> cityNodes = cityMap.get(targetCity);
+        
+        if (cityNodes == null || cityNodes.isEmpty()) {
+            return kargo;
+        }
+        
+        // İlk 10 sipariş al
+        int maxCount = Math.min(10, cityNodes.size());
+        for (int i = 0; i < maxCount; i++) {
+            Node<T> node = cityNodes.get(i);
+            removeNode(node);
+            kargo.add(castToSiparis(node.getData()));
+        }
+        
         return kargo;
     }
 
@@ -150,5 +206,85 @@ public class Queue <T>{
     }
     public boolean isFull(){
         return size == capacity;
+    }
+
+    // Generic güvenliği için helper method
+    @SuppressWarnings("unchecked")
+    private Siparis castToSiparis(T data) {
+        if (data instanceof Siparis) {
+            return (Siparis) data;
+        }
+        throw new ClassCastException("Data is not of type Siparis");
+    }
+
+    public class QueueIterator implements Iterator<T> {
+        private Node<T> current;
+        
+        public QueueIterator() {
+            this.current = front;
+        }
+        
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+        
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            T data = current.getData();
+            current = current.next;
+            return data;
+        }
+    }
+
+    public Iterator<T> iterator() {
+        return new QueueIterator();
+    }
+
+    // removeNode metodunu ekle
+    private void removeNode(Node<T> nodeToRemove) {
+        if (isEmpty() || nodeToRemove == null) {
+            return;
+        }
+        
+        // Eğer front node'unu siliyorsak
+        if (front == nodeToRemove) {
+            dequeue();
+            return;
+        }
+        
+        // Ortadaki bir node'u siliyorsak
+        Node<T> current = front;
+        while (current != null && current.getNext() != nodeToRemove) {
+            current = current.getNext();
+        }
+        
+        if (current != null) {
+            current.setNext(nodeToRemove.getNext());
+            if (nodeToRemove == rear) {
+                rear = current;
+            }
+            size--;
+            
+            // Priority sayısını güncelle
+            if (nodeToRemove.isPriority()) {
+                numOfPriority--;
+            }
+            
+            // City map'ten kaldır
+            if (nodeToRemove.getData() instanceof Siparis) {
+                Siparis siparis = (Siparis) nodeToRemove.getData();
+                List<Node<T>> cityNodes = cityMap.get(siparis.getSehir());
+                if (cityNodes != null) {
+                    cityNodes.remove(nodeToRemove);
+                    if (cityNodes.isEmpty()) {
+                        cityMap.remove(siparis.getSehir());
+                    }
+                }
+            }
+        }
     }
 }

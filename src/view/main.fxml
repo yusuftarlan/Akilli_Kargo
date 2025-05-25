@@ -27,7 +27,7 @@
                         
                         <!-- Şehir seçimi daha görünür konumda -->
                         <Text layoutX="50.0" layoutY="560.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14;" text="Şehir:" />
-                        <ComboBox fx:id="comboCities" layoutX="100.0" layoutY="545.0" prefWidth="200.0" prefHeight="30.0" promptText="Şehir Seçiniz" />
+                        <ComboBox fx:id="comboCities" layoutX="100.0" layoutY="545.0" prefHeight="30.0" prefWidth="200.0" promptText="Şehir Seçiniz" />
                         
                         <!-- Test butonu -->
                         <Button fx:id="btnTestCombo" layoutX="320.0" layoutY="545.0" mnemonicParsing="false" onAction="#testComboAction" prefHeight="30.0" prefWidth="100.0" text="Test Combo" />
@@ -125,9 +125,9 @@
                                     <Image url="@../main/resources/images/robotsüpürge.jpg" />
                                  </image>
                                         </ImageView>
-                                        <Button fx:id="btnPlus7" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
-                                        <TextField fx:id="txtQuantity7" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
                                         <Button fx:id="btnMinus7" mnemonicParsing="false" onAction="#handleDecrease" text="-" />
+                                        <TextField fx:id="txtQuantity7" editable="false" prefHeight="26.0" prefWidth="50.0" text="0" />
+                                        <Button fx:id="btnPlus7" mnemonicParsing="false" onAction="#handleIncrease" text="+" />
                                         <Text text="Ürün 7 - 2kg" wrappingWidth="150.0" />
                                         <RadioButton fx:id="radioNormal" mnemonicParsing="false" selected="true" text="Normal Müşteri">
                                             <toggleGroup>
