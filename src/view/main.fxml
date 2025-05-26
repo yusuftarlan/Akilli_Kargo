@@ -23,7 +23,7 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="609.0" prefWidth="867.0">
                     <children>
-                        <Text layoutX="286.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="MARKET SAYFASI" />
+                        <Text layoutX="363.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 18;" text="MARKET SAYFASI" />
                         
                         <!-- Şehir seçimi daha görünür konumda -->
                         <Text layoutX="50.0" layoutY="560.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 14;" text="Şehir:" />
