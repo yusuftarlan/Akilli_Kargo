@@ -12,9 +12,5 @@ public class Satici {
     }
 
 
-    public Kargo  kargoHazirla(){
 
-        return new Kargo(siparisQueue.kargoHazirla());
-
-    }
 }

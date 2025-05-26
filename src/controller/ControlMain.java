@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import model.Kargo;
 import model.Order;
 import model.Product;
 import util.Node;
@@ -548,7 +549,9 @@ public class ControlMain implements Initializable {
         if (orderToShip != null) {
             Order order = orderToShip.getData();
             boolean isPremium = orderToShip.isPriority();
-
+            if (order.getTotalWeight() < 15){
+                Kargo kargo = new Kargo();
+            }
             cargoQueue.enqueue(new Node<>(order), isPremium);
 
             updateOrderTable();
