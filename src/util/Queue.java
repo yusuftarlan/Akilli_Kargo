@@ -19,52 +19,54 @@ public class Queue <T>{
         numOfPriority = 0;
     }
 
-    public void enqueue(Node<T> node,boolean priority){
-        if(isFull()) {
+    public void enqueue(Node<T> node, boolean priority) {
+        if (isFull()) {
             System.out.println("Queue is full");
             return;
         }
+
         node.setPriority(priority);
 
-        if(isEmpty()){
+        // Boşsa direkt ekle
+        if (isEmpty()) {
             node.next = null;
             front = node;
             rear = node;
             size = 1;
-            if(priority){
-                numOfPriority = 1;
-            }
+            numOfPriority = priority ? 1 : 0;
             return;
         }
-        else{
-            // Listeye ilk defa öncelikli eleman eklenecekse
-            if(node.isPriority() && numOfPriority == 0){
+
+        // Öncelikli eleman ekleniyorsa
+        if (priority) {
+            if (numOfPriority == 0) {
+                // İlk öncelikli eleman en öne ekleniyor
                 node.next = front;
                 front = node;
-                numOfPriority++;
-                size++;
-                return;
-            }
-            if (node.isPriority() && numOfPriority > 0){
+            } else {
+                // Öncelikli elemanlar arasında uygun yere ekleniyor
                 Node<T> temp = front;
-                for (int i = 0; i < numOfPriority - 1; i++){
+                for (int i = 0; i < numOfPriority - 1; i++) {
                     temp = temp.next;
                 }
                 node.next = temp.next;
-                if (node.next == null){
+                temp.next = node;
+
+                // Eğer sona eklenirse rear güncellenmeli
+                if (node.next == null) {
                     rear = node;
                 }
-                temp.next = node;
-                numOfPriority++;
-
-            } else if (!node.isPriority()){
-                rear.next = node;
-                node.next = null;
-                rear = node;
             }
-            size++;
+            numOfPriority++;
+        } else {
+            // Önceliksiz ise direkt kuyruğun sonuna eklenir
+            rear.next = node;
+            node.next = null;
+            rear = node;
         }
+        size++;
     }
+
 
     public Node<T> dequeue(){
         //Sıra boşsa

@@ -549,11 +549,35 @@ public class ControlMain implements Initializable {
         if (orderToShip != null) {
             Order order = orderToShip.getData();
             boolean isPremium = orderToShip.isPriority();
+
             if (order.getTotalWeight() < 15){
+                System.out.println("kargo 15 altı giriş yaptı");
                 Kargo kargo = new Kargo();
+                Queue<Order> tempQueue = new Queue<>(100);
+
+                while (!sellerOrderQueue.isEmpty() && order.getTotalWeight() + kargo.getWeight() < 15){
+                    System.out.println("order w: "+order.getTotalWeight() + "kargo: " + kargo.getWeight());
+                    Node<Order> tempOrder = sellerOrderQueue.dequeue();
+                    if (order.getTotalWeight() + tempOrder.getData().getTotalWeight() + kargo.getWeight() <= 15){
+                        System.out.println("if çalıştı");
+                        kargo.add(tempOrder.getData().getProducts());
+                        continue;
+                    }
+                    tempQueue.enqueue(tempOrder,tempOrder.isPriority());
+                }
+                while (!sellerOrderQueue.isEmpty()){
+                    Node<Order> tempOrder = sellerOrderQueue.dequeue();
+                    tempQueue.enqueue(tempOrder,tempOrder.isPriority());
+                }
+                while (!tempQueue.isEmpty()){
+                    Node<Order> tempOrder = tempQueue.dequeue();
+                    sellerOrderQueue.enqueue(tempOrder,tempOrder.isPriority());
+                }
+                for (int i = 0; i < kargo.getProducts().size(); i++) {
+                    order.addProduct(kargo.getProducts().get(i));
+                }
             }
             cargoQueue.enqueue(new Node<>(order), isPremium);
-
             updateOrderTable();
 
             updateCargoTable();
