@@ -1,0 +1,98 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #fffaf5;
+}
+
+/* Etiketler */
+.label {
+    -fx-text-fill: #4a2e1f;
+    -fx-font-size: 14px;
+}
+
+/* Genel butonlar (+ / - gibi) */
+.button {
+    -fx-background-color: #ff8a00;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #e59400;
+}
+
+/* Sipariş, Kargo gibi özel aksiyon butonları */
+#btnOrder {
+    -fx-background-color: #ff8a00;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+#btnOrder:hover {
+    -fx-background-color: #ca6f1e;
+}
+#btnShip {
+    -fx-background-color: #ff8a00;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+#btnShip:hover {
+    -fx-background-color: #ca6f1e;
+}#btnSendCargo {
+     -fx-background-color: #ff8a00;
+     -fx-text-fill: white;
+     -fx-font-size: 14px;
+     -fx-background-radius: 6;
+     -fx-cursor: hand;
+ }
+
+#btnSendCargo:hover {
+    -fx-background-color: #ca6f1e;
+}
+/* TextField, PasswordField */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #f5cba7;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 6 8;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #f5a623;
+}
+
+/* Tablo görünümü */
+.table-view {
+    -fx-border-color: #e0dacd;
+    -fx-background-color: white;
+    -fx-table-cell-border-color: #fcebd3;
+    -fx-selection-bar: #f5a623;
+}
+
+.table-column-header {
+    -fx-background-color: #fdebd0;
+    -fx-text-fill: #4a2e1f;
+}
+
+/* Sekmeler */
+.tab-pane .tab-header-area {
+    -fx-background-color: #fdebd0;
+}
+
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4a2e1f;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #f5a623;
+    -fx-text-fill: white;
+}
