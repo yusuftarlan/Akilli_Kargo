@@ -552,7 +552,7 @@ public class ControlMain implements Initializable {
             cargoQueue.enqueue(new Node<>(order), isPremium);
 
             updateOrderTable();
-
+            //yorum
             updateCargoTable();
 
             String orderType = isPremium ? "Premium" : "Normal";
